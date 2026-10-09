@@ -10,7 +10,7 @@ greeting: Hello, I'm Siddharth.
 
 # Each entry here is one paragraph.
 bio:
-  - I'm a computer science engineer who has been working on building opportunities for students to learn computer science better outside of their classrooms.
+  - I'm a computer science engineer who has been working on building opportunities for students to learn computer science better, outside their classrooms.
   - You'll find me exploring technologies, communities and everything in between.
 
 # Image shown next to the intro. Put your own file in assets/ and change the path.

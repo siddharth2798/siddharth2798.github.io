@@ -69,6 +69,14 @@ const showError = (err) => {
     <p class="hint">If you opened this file directly, run a local server instead: <code>python3 -m http.server</code></p></div>`;
 };
 
+// Optional photo for an item: `image: assets/talks/foo.jpg` (+ `image_alt:` for screen readers).
+// Clicking it opens the full-size image.
+const photo = (item, cls) =>
+  item.image
+    ? `<a class="${cls}" href="${esc(item.image)}" target="_blank" rel="noopener">` +
+      `<img src="${esc(item.image)}" alt="${esc(item.image_alt || item.title)}" loading="lazy" decoding="async"></a>`
+    : '';
+
 // ── section layouts ────────────────────────────────────────────
 
 const layouts = {
@@ -81,7 +89,8 @@ const layouts = {
     const title = href
       ? `<a class="card-title" ${linkAttrs(href)}>${icon(it.icon)}<span>${esc(it.title)}</span></a>`
       : `<div class="card-title">${icon(it.icon)}<span>${esc(it.title)}</span></div>`;
-    return `<article class="card box">
+    return `<article class="card box${it.image ? ' has-image' : ''}">
+      ${photo(it, 'card-img')}
       ${title}
       ${it.description ? `<p class="desc">${inline(it.description)}</p>` : ''}
       ${tags(it)}${links(it)}
@@ -95,8 +104,8 @@ const layouts = {
       const title = href
         ? `<a class="row-title" ${linkAttrs(href)}>${esc(it.title)}</a>`
         : `<span class="row-title">${esc(it.title)}</span>`;
-      return `<li class="row">
-        <span class="row-icon">${icon(it.icon)}</span>
+      return `<li class="row${it.image ? ' has-image' : ''}">
+        ${it.image ? photo(it, 'row-thumb') : `<span class="row-icon">${icon(it.icon)}</span>`}
         <div class="row-body">
           ${title}
           ${it.meta ? `<div class="meta">${inline(it.meta)}</div>` : ''}

@@ -1,22 +1,63 @@
 # Talks are sorted newest-first automatically by `date` (YYYY-MM-DD).
 # `meta` is a short line shown under the title, e.g. event + city.
+# `image` (optional) adds a photo, e.g. put the file in assets/talks/ and write:
+#     image: assets/talks/punefoss-2026.jpg
+#     image_alt: Me presenting at PuneFOSS 4.0     ← optional description for screen readers
 
 items:
-  - title: Building communities around open source
-    date: 2026-03-14
-    meta: IndiaFOSS 2026 · Bengaluru
-    description: How small, consistent contributions turn into thriving communities.
+  - title: India Runs on FOSS
+    date: 2026-09-07
+    meta: AI x SDLC Workshop (Gov of Assam) · Guwahati
+    description: Making the case for FOSS in government and public sector software development.
     icon: mic
     links:
       - label: Slides
-        url: https://example.com/slides
-      - label: Video
-        url: https://youtube.com/watch?v=xxxx
+        url: https://github.com/siddharth2798/Talks/blob/main/India%20runs%20on%20FOSS.pdf
 
-  - title: An introduction to self-hosting
-    date: 2025-08-02
-    meta: FOSS Meetup · Mumbai
+  - title: Sustaining the Digital Commons
+    date: 2026-09-05
+    meta: WikiConference India 2026 · Kochi
+    description: How FOSS United is helping sustain the FOSS and digital commons in India.
     icon: mic
     links:
       - label: Slides
-        url: https://example.com/slides
+        url: https://github.com/siddharth2798/Talks/blob/main/Sustaining%20the%20Digital%20Commons_WikiConfIndia26.pdf
+  
+  - title: Build for Good, Build for the Commons
+    date: 2026-08-08
+    meta: <a href="https://www.samasocial.in/hackathon/build-for-good">Build for Good Hackathon</a> · Online
+    description: Why is open source important for social impact?
+    icon: mic
+    links:
+      - label: Slides
+        url: https://github.com/siddharth2798/Talks/blob/main/Build%20For%20Good.pdf
+      - label: Video
+        url: https://youtu.be/bXtA8BUsOIg
+
+  - title: Beyond Code
+    date: 2026-07-12
+    meta: TinkerSpace · Kochi
+    description: What's beyond code for open source?
+    icon: laptop
+    links:
+      - label: Slides
+        url: https://github.com/siddharth2798/Talks/blob/main/%5BHandson%5D%20Beyond%20Code.pdf
+
+  - title: Panel on What Still Matters in Software Engineering
+    date: 2026-06-20
+    meta: PuneFOSS 4.0 · Pune
+    icon: user-group
+    links:
+      - label: Video
+        url: https://www.youtube.com/watch?v=Js1BxRAaPGc&t=3h29m43s
+
+  - title: Commit to More than Commits
+    date: 2026-06-20
+    meta: PuneFOSS 4.0 · Pune
+    description: Highlighting open source beyond code through FOSS United initiatives
+    icon: mic
+    links:
+      - label: Slides
+        url: https://github.com/siddharth2798/Talks/blob/main/Commit%20to%20More%20Than%20Commits%20(1).pdf
+      - label: Video
+        url: https://www.youtube.com/watch?v=Js1BxRAaPGc&t=1142s
