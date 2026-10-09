@@ -65,6 +65,7 @@ sections:
     layout: list
     limit: 3
 
-  # - title: Writing
-  #   file: content/writing.yaml
-  #   layout: list
+  - title: Writing
+    file: content/writing.yaml
+    layout: list
+    limit: 3
