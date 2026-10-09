@@ -1,0 +1,22 @@
+# Talks are sorted newest-first automatically by `date` (YYYY-MM-DD).
+# `meta` is a short line shown under the title, e.g. event + city.
+
+items:
+  - title: Building communities around open source
+    date: 2026-03-14
+    meta: IndiaFOSS 2026 · Bengaluru
+    description: How small, consistent contributions turn into thriving communities.
+    icon: mic
+    links:
+      - label: Slides
+        url: https://example.com/slides
+      - label: Video
+        url: https://youtube.com/watch?v=xxxx
+
+  - title: An introduction to self-hosting
+    date: 2025-08-02
+    meta: FOSS Meetup · Mumbai
+    icon: mic
+    links:
+      - label: Slides
+        url: https://example.com/slides

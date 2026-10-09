@@ -1,0 +1,18 @@
+# Blog posts, sorted newest-first by `date`.
+#
+# Two kinds of entries:
+#   post: my-slug   → the post lives in this site at content/posts/my-slug.md
+#   url:  https://… → the post lives elsewhere (Medium, dev.to, a company blog…)
+
+items:
+  - title: Hello, world
+    date: 2026-10-01
+    description: Why I set up this site and what I plan to write about.
+    icon: file-text
+    post: hello-world
+
+  - title: A post I wrote somewhere else
+    date: 2026-05-20
+    description: External posts just need a url instead of a post slug.
+    icon: external-link
+    url: https://example.com/my-post

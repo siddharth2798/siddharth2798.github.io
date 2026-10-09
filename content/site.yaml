@@ -1,0 +1,66 @@
+# ─────────────────────────────────────────────────────────────
+#  Main site config. Edit this file to change the hero/about
+#  section and which sections appear on the page (and in what order).
+#  Text fields support inline markdown: **bold**, *italic*, [links](https://…)
+# ─────────────────────────────────────────────────────────────
+
+title: Portfolio                     # big heading at the top + browser tab title
+name: Siddharth                      # used in the footer and on blog post pages
+greeting: Hello, I'm Siddharth.
+
+# Each entry here is one paragraph.
+bio:
+  - I'm a computer science engineer who has been working on building opportunities for students to learn computer science better outside of their classrooms.
+  - You'll find me exploring technologies, communities and everything in between.
+
+# Image shown next to the intro. Put your own file in assets/ and change the path.
+avatar: assets/avatar.svg
+
+# Buttons under the bio. `icon` is any Lucide icon name (https://lucide.dev/icons) or an emoji.
+buttons:
+  - label: Email me
+    icon: mail
+    url: mailto:siddharthshiv2798-webiste@gmail.com
+  - label: GitHub
+    icon: github
+    url: https://github.com/siddharth2798
+  - label: LinkedIn
+    icon: linkedin
+    url: https://linkedin.com/in/siddharth-shivkumar
+
+# Shown in the footer as "Made using …". Add anything else the site uses here.
+credits:
+  - name: js-yaml
+    url: https://github.com/nodeca/js-yaml
+  - name: Marked
+    url: https://github.com/markedjs/marked
+  - name: Lucide
+    url: https://lucide.dev
+  - name: Inter
+    url: https://rsms.me/inter/
+
+# ─────────────────────────────────────────────────────────────
+#  Sections, rendered top-to-bottom in this order.
+#  To add a new section: create a YAML file in content/ and add an entry here.
+#
+#  layout options:
+#    chips  → small bordered boxes in a 3-column grid (good for skills)
+#    cards  → 2-column cards with description + tags (good for projects)
+#    list   → date-sorted rows (good for talks, blog posts, anything dated)
+# ─────────────────────────────────────────────────────────────
+sections:
+  # - title: Skills
+  #   file: content/skills.yaml
+  #   layout: chips
+
+  - title: Projects
+    file: content/projects.yaml
+    layout: cards
+
+  - title: Talks
+    file: content/talks.yaml
+    layout: list
+
+  - title: Writing
+    file: content/writing.yaml
+    layout: list

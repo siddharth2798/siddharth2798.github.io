@@ -1,0 +1,37 @@
+# A section file has either `items:` (a single list) or `tabs:` (several lists with a tab bar).
+# icon: any Lucide icon name (https://lucide.dev/icons) or an emoji.
+
+tabs:
+  - name: Software
+    icon: app-window
+    items:
+      - title: Python
+        icon: code
+      - title: JavaScript
+        icon: braces
+      - title: Linux
+        icon: terminal
+      - title: Docker
+        icon: container
+      - title: PostgreSQL
+        icon: database
+      - title: Git
+        icon: git-branch
+
+  - name: Expertise
+    icon: badge-check
+    items:
+      - title: Open source community building
+        icon: users
+      - title: Public speaking
+        icon: mic
+      - title: Technical writing
+        icon: pen-line
+
+  - name: Language
+    icon: languages
+    items:
+      - title: English
+        icon: "🇬🇧"
+      - title: Hindi
+        icon: "🇮🇳"

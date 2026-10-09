@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 320" fill="none" stroke="#111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Placeholder line-art. Replace with your own illustration or photo (and update `avatar` in content/site.yaml). -->
+  <!-- hair -->
+  <path d="M100 92c-8-40 22-66 58-64 34 2 54 26 50 60-6-10-16-16-26-18-14 8-36 10-52 4-10 4-20 10-30 18z" fill="#111"/>
+  <!-- face -->
+  <path d="M102 92c-4 34 6 70 50 74 36 2 54-26 54-62"/>
+  <!-- ears -->
+  <path d="M102 104c-10-4-16 6-10 16 4 6 10 6 12 4"/>
+  <path d="M206 104c10-4 16 6 10 16-4 6-10 6-12 4"/>
+  <!-- glasses -->
+  <circle cx="132" cy="108" r="15"/>
+  <circle cx="178" cy="108" r="15"/>
+  <path d="M147 108h16M117 106l-14-4M193 106l13-4"/>
+  <!-- eyes -->
+  <circle cx="134" cy="110" r="2.5" fill="#111"/>
+  <circle cx="176" cy="110" r="2.5" fill="#111"/>
+  <!-- smile -->
+  <path d="M140 140c8 8 22 8 30 0"/>
+  <!-- neck + collar -->
+  <path d="M132 164v16M176 162v18"/>
+  <path d="M132 178l22 22 22-22"/>
+  <!-- shoulders / shirt -->
+  <path d="M132 180c-30 6-58 22-66 60l-8 70M176 180c30 6 56 22 64 60l8 70"/>
+  <path d="M154 200v40"/>
+  <!-- laptop -->
+  <path d="M56 236l84-10 14 74-84 10z" fill="#fff"/>
+  <path d="M154 300l70-6"/>
+  <!-- hands -->
+  <path d="M150 262c14-4 30 0 40 10M150 278c14-2 28 2 36 10"/>
+</svg>

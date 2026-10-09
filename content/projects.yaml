@@ -1,0 +1,58 @@
+# Fields for each item (all optional except title):
+#   title, description, icon, tags: [..], url, date,
+#   links: [{ label, url }]   ← extra links shown under the card
+
+ 
+2. [Many Cities of Kochi](https://github.com/siddharth2798/kochi-monuments): The Many Cities of Kochi — an interactive historical monuments map of Greater Kochi and Muziris.
+3. [Education Map](https://github.com/siddharth2798/education-map): Made for IndiaFOSS 2026, this maps out attendees who work in the intersection of education and open source.
+4. [Data Truth](https://github.com/siddharth2798/datatruth): Open-data journalism on Indian public finance. 6 interactive studies tracking how tax money is spent, wasted, and hidden.
+5. [Talks](https://github.com/siddharth2798/Talks): Presentations I use for talks at various events. 
+
+
+
+tabs:
+  - name: Recent Projects
+    icon: pin
+    items:
+      - title: OSM Navigator
+        description: A privacy-first navigation map made with data from Open Street Maps data. APK available for Android users.
+        icon: map-pin
+        tags: [Maps, Open Data]
+        links:
+          - label: Live demo
+            url: https://kuruk.am/vazhi
+          - label: Source
+            url: https://github.com/siddharth2798/osm-navigator
+
+      - title: Many Cities of Kochi
+        description: An interactive historical monuments map of Greater Kochi and Muziris.
+        icon: landmark
+        tags: [Maps, Open Data]
+        links:
+          - label: Live demo
+            url: https://siddharth2798.github.io/kochi-monuments
+          - label: Source
+            url: https://github.com/siddharth2798/kochi-monuments
+
+      - title: Education Map
+        description: Made for IndiaFOSS 2026, this maps out attendees who work in the intersection of education and open source.
+        icon: book-open
+        tags: [Maps, Open Data]
+        links:
+          - label: Live demo
+            url: https://siddharth2798.github.io/education-map
+          - label: Source
+            url: https://github.com/siddharth2798/education-map
+
+  - name: Past Projects
+    icon: clock
+    items:
+      - title: Data Truth
+        description: Open-data journalism on Indian public finance. 6 interactive studies tracking how tax money is spent, wasted, and hidden.
+        icon: file-text
+        tags: [Data Journalism, Open Data]
+        links:
+          - label: Live demo
+            url: https://siddharth2798.github.io/datatruth
+          - label: Source
+            url: https://github.com/siddharth2798/datatruth
