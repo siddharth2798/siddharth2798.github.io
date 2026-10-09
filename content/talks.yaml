@@ -48,7 +48,7 @@ items:
   - title: Panel on What Still Matters in Software Engineering
     date: 2026-06-20
     meta: PuneFOSS 4.0 · Pune
-    icon: user-group
+    icon: user-round-group
     image: assets/talks/punefoss-2026.jpg
     image_alt: Me moderating the panel at PuneFOSS 4.0
     links:
