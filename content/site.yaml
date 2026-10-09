@@ -20,7 +20,7 @@ avatar: assets/avatar.svg
 buttons:
   - label: Email me
     icon: mail
-    url: mailto:siddharthshiv2798-webiste@gmail.com
+    url: mailto:siddharthshiv2798-website@gmail.com
   - label: GitHub
     icon: github
     url: https://github.com/siddharth2798
@@ -47,6 +47,9 @@ credits:
 #    chips  → small bordered boxes in a 3-column grid (good for skills)
 #    cards  → 2-column cards with description + tags (good for projects)
 #    list   → date-sorted rows (good for talks, blog posts, anything dated)
+#
+#  limit: 3 (optional) → the home page shows only the first 3 (newest 3 for lists),
+#    plus a "See all" link to a page with everything: section.html?s=<file name>, e.g. ?s=talks
 # ─────────────────────────────────────────────────────────────
 sections:
   # - title: Skills
@@ -60,6 +63,7 @@ sections:
   - title: Talks
     file: content/talks.yaml
     layout: list
+    limit: 3
 
   # - title: Writing
   #   file: content/writing.yaml

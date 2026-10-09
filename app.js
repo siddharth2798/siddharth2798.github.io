@@ -11,7 +11,12 @@ async function load(path) {
   const text = await res.text();
   if (path.endsWith('.json')) return JSON.parse(text);
   if (path.endsWith('.md')) return text;
-  return jsyaml.load(text);
+  try {
+    return jsyaml.load(text);
+  } catch (err) {
+    // Name the file and line, so a typo in content/ is easy to find.
+    throw new Error(`There's a mistake in ${path}: ${err.reason || err.message} ${err.mark ? `(line ${err.mark.line + 1})` : ''}`);
+  }
 }
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
@@ -36,6 +41,11 @@ const fmtDate = (d, opts = { month: 'short', year: 'numeric' }) => {
   const date = toDate(d);
   return date && !isNaN(date) ? date.toLocaleDateString('en', { ...opts, timeZone: 'UTC' }) : '';
 };
+
+const byDateDesc = (items) => [...items].sort((a, b) => (toDate(b.date) || 0) - (toDate(a.date) || 0));
+
+// A section's id, used in URLs: `id:` from site.yaml, or the data file's name (content/talks.yaml → "talks").
+const sectionId = (section) => section.id || section.file.split('/').pop().replace(/\.\w+$/, '');
 
 const hrefFor = (item) => (item.post ? `post.html?slug=${encodeURIComponent(item.post)}` : item.url || '');
 
@@ -101,8 +111,7 @@ const layouts = {
   }).join('')}</div>`,
 
   list: (items) => {
-    const sorted = [...items].sort((a, b) => (toDate(b.date) || 0) - (toDate(a.date) || 0));
-    return `<ul class="list">${sorted.map((it) => {
+    return `<ul class="list">${byDateDesc(items).map((it) => {
       const href = hrefFor(it);
       const title = href
         ? `<a class="row-title" ${linkAttrs(href)}>${esc(it.title)}</a>`
@@ -121,27 +130,55 @@ const layouts = {
   },
 };
 
-function renderSection(section, data, index) {
-  const render = layouts[section.layout] || layouts.cards;
+// Renders one section.
+//   On the home page, `limit` (from site.yaml) caps how many items show, with a "See all" link to the full page.
+//   On the section's own page (full = true), everything shows, and dated lists are grouped by year.
+function renderSection(section, data, index, { full = false, activeTab = 0 } = {}) {
+  const layout = layouts[section.layout] ? section.layout : 'cards';
+  const render = layouts[layout];
   const id = `s${index}`;
   const tabs = data?.tabs || [{ items: data?.items || [] }];
   const hasTabs = Boolean(data?.tabs);
+  const limit = full ? 0 : Number(section.limit) || 0;
+  const pageHref = (tabIndex) =>
+    `section.html?s=${encodeURIComponent(sectionId(section))}${hasTabs && tabIndex ? `&tab=${tabIndex}` : ''}`;
+
+  const renderItems = (items, tabIndex) => {
+    if (!items.length) return '<p class="empty">Nothing here yet.</p>';
+    const ordered = layout === 'list' ? byDateDesc(items) : items;
+
+    if (limit && ordered.length > limit) {
+      return render(ordered.slice(0, limit)) +
+        `<a class="see-all" href="${pageHref(tabIndex)}"><span>See all ${esc(section.title.toLowerCase())}` +
+        ` <span class="count">(${ordered.length})</span></span><span aria-hidden="true">→</span></a>`;
+    }
+
+    // Full page: group dated lists under year headings (only worth it when there's more than one year).
+    const years = [...new Set(ordered.map((it) => toDate(it.date)?.getUTCFullYear()).filter(Boolean))];
+    if (full && layout === 'list' && years.length > 1) {
+      const undated = ordered.filter((it) => !toDate(it.date));
+      return years.map((y) => `<h2 class="group-year">${y}</h2>` +
+        render(ordered.filter((it) => toDate(it.date)?.getUTCFullYear() === y))).join('') +
+        (undated.length ? `<h2 class="group-year">Other</h2>${render(undated)}` : '');
+    }
+    return render(ordered);
+  };
 
   const tabBar = hasTabs
     ? `<div class="tabs" role="tablist">${tabs.map((t, i) =>
         // A tab with a `url` and no items is just a link (e.g. "Past Projects" → GitHub).
         t.url && !t.items
           ? `<a class="tab" ${linkAttrs(t.url)}>${icon(t.icon)}<span>${esc(t.name)} ↗</span></a>`
-          : `<button class="tab${i === 0 ? ' active' : ''}" role="tab" data-target="${id}-${i}">${icon(t.icon)}<span>${esc(t.name)}</span></button>`
+          : `<button class="tab${i === activeTab ? ' active' : ''}" role="tab" data-target="${id}-${i}">${icon(t.icon)}<span>${esc(t.name)}</span></button>`
       ).join('')}</div>`
     : '';
 
   const panels = tabs.map((t, i) => t.url && !t.items ? '' :
-    `<div class="panel" id="${id}-${i}"${i === 0 ? '' : ' hidden'}>${(t.items || []).length ? render(t.items) : '<p class="empty">Nothing here yet.</p>'}</div>`
+    `<div class="panel" id="${id}-${i}"${i === activeTab ? '' : ' hidden'}>${renderItems(t.items || [], i)}</div>`
   ).join('');
 
-  return `<section class="section">
-    <h2>${esc(section.title)}</h2>
+  return `<section class="section" id="${esc(sectionId(section))}">
+    ${full ? '' : `<h2>${esc(section.title)}</h2>`}
     ${tabBar}${panels}
   </section>`;
 }
@@ -179,6 +216,31 @@ async function renderHome() {
     ${(site.sections || []).map((s, i) => renderSection(s, sectionData[i], i)).join('')}
     ${footer(site)}
   `;
+
+  // Content arrives after the browser's own jump-to-#anchor, so do it ourselves (e.g. "← Home" from /section.html).
+  const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (target) target.scrollIntoView();
+}
+
+async function renderSectionPage() {
+  const params = new URLSearchParams(location.search);
+  const site = await load('content/site.yaml');
+  const sections = site.sections || [];
+  const index = sections.findIndex((s) => sectionId(s) === params.get('s'));
+  if (index === -1) throw new Error(`There's no section called "${params.get('s') || ''}".`);
+
+  const section = sections[index];
+  const data = await load(section.file);
+  const tabCount = data?.tabs?.length || 1;
+  const activeTab = Math.min(Math.max(parseInt(params.get('tab'), 10) || 0, 0), tabCount - 1);
+
+  document.title = `${section.title} · ${site.name || site.title || ''}`;
+  app.innerHTML = `
+    <a class="back" href="./#${esc(sectionId(section))}">← Home</a>
+    <h1 class="page-title">${esc(section.title)}</h1>
+    ${renderSection(section, data, index, { full: true, activeTab })}
+    ${footer(site)}
+  `;
 }
 
 async function renderPost() {
@@ -194,10 +256,14 @@ async function renderPost() {
   // Find this post's title/date/description in whichever section lists it.
   const allItems = sectionData.flatMap((d) => (d?.tabs ? d.tabs.flatMap((t) => t.items || []) : d?.items || []));
   const meta = allItems.find((it) => it.post === slug) || { title: slug };
+  const home = (site.sections || []).find((s, i) => {
+    const d = sectionData[i];
+    return (d?.tabs ? d.tabs.flatMap((t) => t.items || []) : d?.items || []).some((it) => it.post === slug);
+  });
 
   document.title = `${meta.title} · ${site.name || site.title || ''}`;
   app.innerHTML = `
-    <a class="back" href="./">← Back</a>
+    <a class="back" href="./${home ? `#${esc(sectionId(home))}` : ''}">← Back</a>
     <article class="post">
       <h1 class="page-title">${esc(meta.title)}</h1>
       ${meta.date ? `<time class="post-date">${fmtDate(meta.date, { day: 'numeric', month: 'long', year: 'numeric' })}</time>` : ''}
@@ -207,6 +273,8 @@ async function renderPost() {
   `;
 }
 
-(app.dataset.page === 'post' ? renderPost() : renderHome())
+const pages = { post: renderPost, section: renderSectionPage };
+
+(pages[app.dataset.page] || renderHome)()
   .then(() => window.lucide?.createIcons())
   .catch(showError);
