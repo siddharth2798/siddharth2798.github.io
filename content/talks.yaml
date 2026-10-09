@@ -27,7 +27,7 @@ items:
   
   - title: Build for Good, Build for the Commons
     date: 2026-08-08
-    meta: <a href="https://www.samasocial.in/hackathon/build-for-good">Build for Good Hackathon</a> · Online
+    meta: "[Build for Good Hackathon](https://www.samasocial.in/hackathon/build-for-good) · Online"
     description: Why is open source important for social impact?
     icon: mic
     links:
@@ -48,7 +48,7 @@ items:
   - title: Panel on What Still Matters in Software Engineering
     date: 2026-06-20
     meta: PuneFOSS 4.0 · Pune
-    icon: user-round-group
+    icon: users-round
     image: assets/talks/punefoss-2026.jpg
     image_alt: Me moderating the panel at PuneFOSS 4.0
     links:

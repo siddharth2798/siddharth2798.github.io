@@ -18,7 +18,10 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
   { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
 ));
 
-const inline = (s) => (s ? marked.parseInline(String(s)) : '');
+// Markdown links to other sites open in a new tab, like every other external link on the page.
+const newTab = (html) => html.replace(/<a href="(https?:\/\/[^"]*)"/g, '<a href="$1" target="_blank" rel="noopener"');
+
+const inline = (s) => (s ? newTab(marked.parseInline(String(s))) : '');
 
 // Lucide icon name (e.g. "code") or any emoji / text.
 const icon = (name) => {
@@ -156,7 +159,7 @@ app.addEventListener('click', (e) => {
 
 async function renderHome() {
   const site = await load('content/site.yaml');
-  document.title = site.title || site.name || 'Portfolio';
+  document.title = [site.name, site.title].filter(Boolean).join(' · ') || 'Portfolio';
 
   const sectionData = await Promise.all((site.sections || []).map((s) => load(s.file)));
   const bio = [].concat(site.bio || []);
@@ -198,7 +201,7 @@ async function renderPost() {
     <article class="post">
       <h1 class="page-title">${esc(meta.title)}</h1>
       ${meta.date ? `<time class="post-date">${fmtDate(meta.date, { day: 'numeric', month: 'long', year: 'numeric' })}</time>` : ''}
-      <div class="prose">${marked.parse(body)}</div>
+      <div class="prose">${newTab(marked.parse(body))}</div>
     </article>
     ${footer(site)}
   `;

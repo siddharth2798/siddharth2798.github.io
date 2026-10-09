@@ -61,6 +61,6 @@ sections:
     file: content/talks.yaml
     layout: list
 
-  - title: Writing
-    file: content/writing.yaml
-    layout: list
+  # - title: Writing
+  #   file: content/writing.yaml
+  #   layout: list

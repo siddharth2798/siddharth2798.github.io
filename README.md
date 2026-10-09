@@ -49,6 +49,7 @@ python3 -m http.server 8000
        post: my-new-post        # ← matches the file name
    ```
    For a post hosted elsewhere, use `url: https://…` instead of `post:`.
+3. If the Writing section is commented out in `site.yaml`, un-comment it.
 
 **Add a project** by appending to a tab in `content/projects.yaml`. To add a new tab, add another `- name: … items: […]` block.
 A tab with a `url` and no `items` becomes a link instead, e.g. `- name: All projects` / `icon: github` / `url: https://github.com/you`.
@@ -85,8 +86,10 @@ Every item, in any section, can use any of these fields. Only `title` is require
 
 It's a static folder, so it works on any static host.
 
+- **GitHub Pages:** push this folder to a repo, then go to Settings → Pages → "Deploy from a branch" → `main` / root.
   Name the repo `<username>.github.io` to serve it at `https://<username>.github.io/`. Keep the empty
   `.nojekyll` file. Without it, GitHub turns the `.md` posts into HTML and the blog pages can't load them.
+- **Netlify / Cloudflare Pages:** connect the repo, leave the build command empty, and set the publish directory to `/`.
 
 ## Customising the look
 
@@ -94,4 +97,8 @@ Colors are CSS variables at the top of `style.css`: `:root` holds the light them
 The sun/moon button (in `theme.js`) switches between them. The site follows the visitor's system setting until they click it,
 and after that their choice is remembered in their browser.
 To use your own picture, replace `assets/avatar.svg` with any image and update `avatar:` in `site.yaml`.
->>>>>>> 33501b3 (feat: add initial portfolio structure with projects, writing, and talks sections)
+
+**Favicon and link previews:** the tab icon is `assets/favicon.svg` (plus `apple-touch-icon.png` for iPhones).
+When the site is shared on WhatsApp, LinkedIn, Slack and so on, the preview uses `assets/og-image.png` (1200×630) and the
+`og:` tags at the top of `index.html`. Link-preview services don't run JavaScript, so those tags can't come from `site.yaml`.
+Update them by hand if your bio changes.
