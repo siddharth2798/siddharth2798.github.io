@@ -18,6 +18,8 @@ items:
     date: 2026-09-05
     meta: WikiConference India 2026 · Kochi
     description: How FOSS United is helping sustain the FOSS and digital commons in India.
+    image: assets/talks/wikiconf-india-2026.jpg
+    image_alt: Me presenting at WikiConference India 2026
     icon: mic
     links:
       - label: Slides
@@ -47,6 +49,8 @@ items:
     date: 2026-06-20
     meta: PuneFOSS 4.0 · Pune
     icon: user-group
+    image: assets/talks/punefoss-2026.jpg
+    image_alt: Me moderating the panel at PuneFOSS 4.0
     links:
       - label: Video
         url: https://www.youtube.com/watch?v=Js1BxRAaPGc&t=3h29m43s
