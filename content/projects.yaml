@@ -12,6 +12,15 @@ tabs:
   - name: Recent Projects
     icon: pin
     items:
+
+      - title: Libresim
+        description: A free and open source flight simulator for Linux, Windows, and MacOS.
+        icon: flight
+        tags: [Flight, Simulator, Open Source]
+        links:
+          - label: Source
+            url: https://github.com/siddharth2798/libresim
+
       - title: OSM Navigator
         description: A privacy-first navigation map made with data from Open Street Maps data. APK available for Android users.
         icon: map-pin
