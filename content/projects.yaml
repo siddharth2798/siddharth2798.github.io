@@ -15,7 +15,7 @@ tabs:
 
       - title: Libresim
         description: A free and open source flight simulator for Linux, Windows, and MacOS.
-        icon: flight
+        icon: plane
         tags: [Flight, Simulator, Open Source]
         links:
           - label: Source
