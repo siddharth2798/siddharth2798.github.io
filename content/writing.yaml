@@ -19,3 +19,15 @@ items:
     description: Rise and the downfall of Koo and what it tells us about Indian policy and regulations.
     icon: file-text
     post: koo
+
+  - title: FOSS Clubs Handbook
+    date: 2026-04-10
+    description: A handbook for students to run an open source centric club in their college
+    icon: file-text
+    url: https://docs.fossunited.org/clubs
+
+  - title: Digital Commons Curriculum 
+    date: 2027-07-01
+    description: Based on AICTE guidelines, a 14 week digital commons elective for colleges
+    icon: file-text
+    url: https://docs.fossunited.org/education/education-curriculum/
