@@ -5,6 +5,18 @@
 #     image_alt: Me presenting at PuneFOSS 4.0     ← optional description for screen readers
 
 items:
+
+  - title: Think before you prompt
+    date: 2026-10-22
+    meta: AI Wednesday · Tinkerspace Kochi
+    description: A framework on evaluating data privacy, misuse and human accountability
+    icon: armchair
+    links:
+      - label: Slides
+        url: https://github.com/siddharth2798/Talks/blob/main/Think%20before%20you%20prompt.pdf
+      - label: Framework
+        url: https://siddharth2798.github.io/post.html?slug=bridges
+
   - title: India Runs on FOSS
     date: 2026-09-07
     meta: AI x SDLC Workshop (Gov of Assam) · Guwahati
