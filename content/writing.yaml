@@ -27,7 +27,13 @@ items:
     url: https://docs.fossunited.org/clubs
 
   - title: Digital Commons Curriculum 
-    date: 2027-07-01
+    date: 2026-07-01
     description: Based on AICTE guidelines, a 14 week digital commons elective for colleges
     icon: file-text
     url: https://docs.fossunited.org/education/education-curriculum/
+
+  - title: BRIDGES Framework
+    date: 2026-10-18
+    description: A framework for AI builders to evaluate data privacy, misuse and human accountability
+    icon: file-text
+    post: bridges
