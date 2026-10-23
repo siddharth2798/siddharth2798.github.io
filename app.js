@@ -192,6 +192,273 @@ app.addEventListener('click', (e) => {
   section.querySelectorAll('.panel').forEach((p) => { p.hidden = p.id !== tab.dataset.target; });
 });
 
+// ── phone app (≤720px) ─────────────────────────────────────────
+// On phones the home page is a small app: an About screen plus one screen per section, switched from a bar
+// at the bottom. Each section screen has a search box and (when its items have dates) a calendar filter.
+// It's rendered next to the desktop page and style.css shows whichever fits the screen.
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const itemsOfData = (data) => (data?.tabs ? data.tabs.flatMap((t) => t.items || []) : data?.items || []);
+
+const ymOf = (it) => {
+  const d = toDate(it.date);
+  return d && !isNaN(d) ? { y: d.getUTCFullYear(), m: d.getUTCMonth() } : null;
+};
+
+const filterActive = (f) => Boolean(f.q.trim() || f.year);
+
+// Search looks in the title, description, event line and tags. The calendar picks a year, then optionally a month.
+function itemMatches(it, f) {
+  if (f.year) {
+    const ym = ymOf(it);
+    if (!ym || ym.y !== f.year || (f.month !== null && ym.m !== f.month)) return false;
+  }
+  const q = f.q.trim().toLowerCase();
+  if (!q) return true;
+  return [it.title, it.description, it.meta, ...(it.tags || [])].filter(Boolean).join(' ').toLowerCase().includes(q);
+}
+
+const mLinks = (it) =>
+  it.links?.length ? `<span class="m-links">${it.links.map((l) => `<a ${linkAttrs(l.url)}>${esc(l.label)} ↗</a>`).join('')}</span>` : '';
+
+const mTitle = (it) => {
+  const href = hrefFor(it);
+  return href
+    ? `<a class="m-title" ${linkAttrs(href)}>${esc(it.title)}</a>`
+    : `<span class="m-title">${esc(it.title)}</span>`;
+};
+
+// Project-style card: icon, title, two lines of description, tags and links on one row.
+const mCard = (it) => `<article class="m-card">
+  <span class="m-ico">${icon(it.icon)}</span>
+  <div class="m-card-body">
+    ${mTitle(it)}
+    ${it.description ? `<p class="m-desc">${inline(it.description)}</p>` : ''}
+    <div class="m-foot"><span class="m-meta">${esc((it.tags || []).slice(0, 2).join(' · '))}</span>${mLinks(it)}</div>
+  </div>
+</article>`;
+
+// Talk / writing row: small photo (if any) beside the text, date and event on a single line.
+const mRow = (it) => {
+  const date = fmtDate(it.date, { day: 'numeric', month: 'short', year: 'numeric' });
+  const line = [esc(date), it.meta ? inline(it.meta) : ''].filter(Boolean).join(' · ');
+  return `<li class="m-row">
+    ${photo(it, 'm-thumb')}
+    <div class="m-row-body">
+      <div class="m-line">${line}</div>
+      ${mTitle(it)}
+      ${it.description ? `<p class="m-desc">${inline(it.description)}</p>` : ''}
+      ${mLinks(it)}
+    </div>
+  </li>`;
+};
+
+const mRender = (section, items) =>
+  section.layout === 'list'
+    ? `<ul class="m-list">${byDateDesc(items).map(mRow).join('')}</ul>`
+    : `<div class="m-cards">${items.map(mCard).join('')}</div>`;
+
+// Chips for whatever filters are on (tap to remove), plus "N of M".
+const mFilterBar = (f, shown, total) => !filterActive(f) ? '' : `<div class="m-filters">
+  ${f.q.trim() ? `<button class="m-chip" data-m-clear="q">“${esc(f.q.trim())}” ${icon('x')}</button>` : ''}
+  ${f.year ? `<button class="m-chip" data-m-clear="date">${f.month !== null ? `${MONTHS[f.month]} ` : ''}${f.year} ${icon('x')}</button>` : ''}
+  <span class="m-count">${shown} of ${total}</span>
+</div>`;
+
+// What a section screen shows. Unfiltered: its tabs (e.g. Recent / Past) as a switch. Filtered: one flat list.
+function mViewBody(section, data, f) {
+  const all = itemsOfData(data);
+  if (filterActive(f)) {
+    const items = all.filter((it) => itemMatches(it, f));
+    return mFilterBar(f, items.length, all.length) + (items.length ? mRender(section, items) : `<div class="m-empty">
+      ${icon('search-x')}<p>No ${esc(section.title.toLowerCase())} match these filters.</p>
+      <button class="m-chip" data-m-clear="all">Clear filters</button></div>`);
+  }
+  if (!data?.tabs?.length) return all.length ? mRender(section, all) : '<p class="empty">Nothing here yet.</p>';
+
+  const first = data.tabs.findIndex((t) => !(t.url && !t.items));
+  return `<div class="m-seg" role="tablist">${data.tabs.map((t, i) => t.url && !t.items
+      ? `<a class="m-seg-link" ${linkAttrs(t.url)}>${esc(t.name)} ↗</a>`
+      : `<button role="tab" class="${i === first ? 'active' : ''}" data-m-seg="${i}">${esc(t.name)}</button>`).join('')}</div>` +
+    data.tabs.map((t, i) => t.url && !t.items ? '' :
+      `<div data-m-panel="${i}"${i === first ? '' : ' hidden'}>${mRender(section, t.items || [])}</div>`).join('');
+}
+
+function phoneApp(site, sections, sectionData) {
+  const bio = [].concat(site.bio || []);
+  const tabs = [{ id: 'about', title: 'About', icon: 'user' },
+    ...sections.map((s) => ({ id: sectionId(s), title: s.title, icon: s.icon || 'file-text' }))];
+
+  return `<div class="m-app">
+    <div class="m-bar"></div>
+    <div class="m-view m-about" data-m-view="about">
+      ${site.avatar ? `<img class="m-avatar" src="${esc(site.avatar)}" alt="${esc(site.name || '')}">` : ''}
+      ${site.greeting ? `<h1 class="m-greeting">${esc(site.greeting)}</h1>` : ''}
+      ${bio.map((p) => `<p>${inline(p)}</p>`).join('')}
+      ${site.buttons?.length ? `<div class="buttons">${site.buttons.map((b) =>
+        `<a class="button" ${linkAttrs(b.url)}>${icon(b.icon)}<span>${esc(b.label)}</span></a>`).join('')}</div>` : ''}
+      ${footer(site)}
+    </div>
+    ${sections.map((s, i) => `<div class="m-view" data-m-view="${esc(sectionId(s))}" hidden>
+      <div class="m-body">${mViewBody(s, sectionData[i], { q: '', year: null, month: null })}</div></div>`).join('')}
+    <nav class="m-tabs" aria-label="Sections">${tabs.map((t) =>
+      `<button class="m-tab" data-m-go="${esc(t.id)}">${icon(t.icon)}<span>${esc(t.title)}</span></button>`).join('')}</nav>
+  </div>`;
+}
+
+function initPhoneApp(root, site, sections, sectionData) {
+  const info = Object.fromEntries(sections.map((s, i) => [sectionId(s), { section: s, data: sectionData[i] }]));
+  const state = Object.fromEntries(Object.keys(info).map((id) => [id, { q: '', year: null, month: null, searching: false }]));
+  const bar = root.querySelector('.m-bar');
+  let view = 'about';
+
+  const itemsOf = (id) => itemsOfData(info[id].data);
+  const yearsOf = (id) => [...new Set(itemsOf(id).map(ymOf).filter(Boolean).map((d) => d.y))].sort((a, b) => b - a);
+  const hasDates = (id) => yearsOf(id).length > 0;
+  const icons = () => window.lucide?.createIcons();
+
+  const closeSheet = () => root.querySelector('.m-sheet')?.remove();
+
+  // Year chips, then a month grid (months with nothing in them are greyed out).
+  const sheetHtml = (id) => {
+    const f = state[id];
+    const all = itemsOf(id);
+    const ys = yearsOf(id);
+    const year = f.year || ys[0];
+    const withItems = new Set(all.map(ymOf).filter((d) => d && d.y === year).map((d) => d.m));
+    const count = all.filter((it) => itemMatches(it, f)).length;
+    return `<div class="m-sheet" role="dialog" aria-label="Filter by date">
+      <div class="m-sheet-card">
+        <div class="m-sheet-title">Filter by date</div>
+        <div class="m-sheet-label">Year</div>
+        <div class="m-opts">
+          <button class="m-opt${f.year ? '' : ' active'}" data-m-year="all">All</button>
+          ${ys.map((y) => `<button class="m-opt${f.year === y ? ' active' : ''}" data-m-year="${y}">${y}</button>`).join('')}
+        </div>
+        <div class="m-sheet-label">Month <span>· ${year}</span></div>
+        <div class="m-months">${MONTHS.map((m, i) =>
+          `<button class="m-opt${f.year && f.month === i ? ' active' : ''}" data-m-month="${i}"${withItems.has(i) ? '' : ' disabled'}>${m}</button>`).join('')}</div>
+        <div class="m-sheet-actions">
+          <button class="m-opt" data-m-clear="date"${f.year ? '' : ' disabled'}>Clear</button>
+          <button class="m-primary" data-m-sheet-close>Show ${count} ${count === 1 ? 'result' : 'results'}</button>
+        </div>
+      </div>
+    </div>`;
+  };
+
+  const renderBar = (focus = false) => {
+    const theme = `<button class="m-icon-btn" data-m-theme aria-label="Switch light / dark mode">${icon('sun-moon')}</button>`;
+    if (view === 'about') {
+      bar.innerHTML = `<span class="m-bar-title">${esc(site.title || site.name || '')}</span><span class="m-tools">${theme}</span>`;
+    } else {
+      const f = state[view];
+      const title = esc(info[view].section.title);
+      bar.innerHTML = f.searching
+        // The search box grows out of the icon and covers the title.
+        ? `<div class="m-search">${icon('search')}<input data-m-search type="search" enterkeyhint="search"
+             placeholder="Search ${title.toLowerCase()}" value="${esc(f.q)}" aria-label="Search ${title}">
+             <button class="m-icon-btn" data-m-search-close aria-label="Close search">${icon('x')}</button></div>`
+        : `<span class="m-bar-title">${title}</span><span class="m-tools">
+             <button class="m-icon-btn${f.q.trim() ? ' on' : ''}" data-m-search-open aria-label="Search ${title}">${icon('search')}</button>
+             ${hasDates(view) ? `<button class="m-icon-btn${f.year ? ' on' : ''}" data-m-cal aria-label="Filter by date">${icon('calendar')}</button>` : ''}
+             ${theme}</span>`;
+    }
+    icons();
+    if (focus) bar.querySelector('[data-m-search]')?.focus();
+  };
+
+  const renderBody = (id) => {
+    root.querySelector(`[data-m-view="${id}"] .m-body`).innerHTML = mViewBody(info[id].section, info[id].data, state[id]);
+    icons();
+  };
+
+  const setView = (id, { updateHash = true } = {}) => {
+    view = id === 'about' || info[id] ? id : 'about';
+    closeSheet();
+    root.querySelectorAll('.m-view').forEach((v) => { v.hidden = v.dataset.mView !== view; });
+    root.querySelectorAll('.m-tab').forEach((t) => {
+      const on = t.dataset.mGo === view;
+      t.classList.toggle('active', on);
+      if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
+    renderBar();
+    window.scrollTo(0, 0);
+    // Keep the address in step so "← Back" from a post (or a shared link) lands on the right screen.
+    if (updateHash) history.replaceState(null, '', view === 'about' ? location.pathname + location.search : `#${view}`);
+  };
+
+  const fromHash = () => decodeURIComponent(location.hash.slice(1));
+
+  root.addEventListener('click', (e) => {
+    const t = e.target;
+    const go = t.closest('[data-m-go]');
+    if (go) return setView(go.dataset.mGo);
+    if (t.closest('[data-m-theme]')) { document.querySelector('.theme-toggle')?.click(); return; }
+
+    const seg = t.closest('[data-m-seg]');
+    if (seg) {
+      const body = seg.closest('.m-body');
+      body.querySelectorAll('[data-m-seg]').forEach((b) => b.classList.toggle('active', b === seg));
+      body.querySelectorAll('[data-m-panel]').forEach((p) => { p.hidden = p.dataset.mPanel !== seg.dataset.mSeg; });
+      return;
+    }
+
+    if (view === 'about') return;
+    const f = state[view];
+
+    if (t.closest('[data-m-search-open]')) { f.searching = true; closeSheet(); renderBar(true); return; }
+    if (t.closest('[data-m-search-close]')) { Object.assign(f, { searching: false, q: '' }); renderBar(); renderBody(view); return; }
+    if (t.closest('[data-m-cal]')) {
+      if (root.querySelector('.m-sheet')) closeSheet(); else { root.insertAdjacentHTML('beforeend', sheetHtml(view)); icons(); }
+      return;
+    }
+    if (t.closest('[data-m-sheet-close]') || t.classList.contains('m-sheet')) { closeSheet(); return; }
+
+    const refreshSheet = () => {
+      if (!root.querySelector('.m-sheet')) return;
+      closeSheet();
+      root.insertAdjacentHTML('beforeend', sheetHtml(view));
+      root.querySelector('.m-sheet').classList.add('still'); // no fade-in replay on every tap
+    };
+    const year = t.closest('[data-m-year]');
+    if (year) {
+      f.year = year.dataset.mYear === 'all' ? null : Number(year.dataset.mYear);
+      f.month = null;
+      renderBar(); renderBody(view); refreshSheet();
+      return;
+    }
+    const month = t.closest('[data-m-month]');
+    if (month && !month.disabled) {
+      const m = Number(month.dataset.mMonth);
+      f.year = f.year || yearsOf(view)[0];
+      f.month = f.month === m ? null : m; // tap again to deselect
+      renderBar(); renderBody(view); refreshSheet();
+      return;
+    }
+    const clear = t.closest('[data-m-clear]');
+    if (clear) {
+      if (clear.dataset.mClear !== 'date') { f.q = ''; f.searching = false; }
+      if (clear.dataset.mClear !== 'q') { f.year = null; f.month = null; }
+      closeSheet(); renderBar(); renderBody(view);
+    }
+  });
+
+  // Typing filters live. Only the list re-renders, so the input keeps focus.
+  root.addEventListener('input', (e) => {
+    if (!e.target.matches('[data-m-search]')) return;
+    state[view].q = e.target.value;
+    renderBody(view);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSheet();
+  });
+
+  window.addEventListener('hashchange', () => setView(fromHash(), { updateHash: false }));
+  setView(fromHash(), { updateHash: false });
+}
+
 // ── pages ──────────────────────────────────────────────────────
 
 async function renderHome() {
@@ -201,7 +468,12 @@ async function renderHome() {
   const sectionData = await Promise.all((site.sections || []).map((s) => load(s.file)));
   const bio = [].concat(site.bio || []);
 
-  app.innerHTML = `
+  // Desktop page and phone app are both rendered; style.css shows one of them (breakpoint: 720px).
+  app.classList.add('home');
+  document.body.classList.add('m-home');
+  const sections = site.sections || [];
+
+  app.innerHTML = `<div class="d-page">
     ${site.title ? `<h1 class="page-title">${esc(site.title)}</h1>` : ''}
     <header class="hero">
       <div class="hero-text">
@@ -213,9 +485,10 @@ async function renderHome() {
       </div>
       ${site.avatar ? `<img class="avatar" src="${esc(site.avatar)}" alt="${esc(site.name || '')}">` : ''}
     </header>
-    ${(site.sections || []).map((s, i) => renderSection(s, sectionData[i], i)).join('')}
+    ${sections.map((s, i) => renderSection(s, sectionData[i], i)).join('')}
     ${footer(site)}
-  `;
+  </div>${phoneApp(site, sections, sectionData)}`;
+  initPhoneApp(app.querySelector('.m-app'), site, sections, sectionData);
 
   // Content arrives after the browser's own jump-to-#anchor, so do it ourselves (e.g. "← Home" from /section.html).
   const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));

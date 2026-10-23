@@ -50,6 +50,11 @@ credits:
 #
 #  limit: 3 (optional) → the home page shows only the first 3 (newest 3 for lists),
 #    plus a "See all" link to a page with everything: section.html?s=<file name>, e.g. ?s=talks
+#    (Desktop only. On phones every section is its own tab and lists everything.)
+#
+#  icon: (optional) → Lucide icon name for this section's tab on phones, e.g. folder-kanban, mic, file-text.
+#
+#  On phones each section also gets a search box. If its items have a `date`, it gets a calendar filter too.
 # ─────────────────────────────────────────────────────────────
 sections:
   # - title: Skills
@@ -59,13 +64,16 @@ sections:
   - title: Projects
     file: content/projects.yaml
     layout: cards
+    icon: folder-kanban
 
   - title: Talks
     file: content/talks.yaml
     layout: list
     limit: 3
+    icon: mic
 
   - title: Writing
     file: content/writing.yaml
     layout: list
     limit: 3
+    icon: file-text
