@@ -10,7 +10,6 @@ greeting: Hello, I'm Siddharth Shivkumar.
 
 # Each entry here is one paragraph.
 bio:
-  - I’m a computer science engineer who doesn't write code for a living. 
   - I work with student communities to create spaces where they can learn, build and meet each other. I want every student to have the agency to learn beyond their curriculum, and the resources to do it, wherever they live or study.
 
 # Image shown next to the intro. Put your own file in assets/ and change the path.
