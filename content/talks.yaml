@@ -5,6 +5,16 @@
 #     image_alt: Me presenting at PuneFOSS 4.0     ← optional description for screen readers
 
 items:
+  - title: FOSS United Foundation (Introduction)
+    date: 2026-10-31
+    meta: MumbaiFOSS 2026 · IIT Bombay
+    icon: mic
+    links:
+      - label: Slides
+        url: https://github.com/siddharth2798/Talks/blob/main/MumbaiFOSS%20-%20Intro%20Talk.pdf
+      - label: Video
+        url: https://www.youtube.com/watch?v=3QfCZw8hOAc&t=40m30s
+
 
   - title: Think before you prompt
     date: 2026-10-22
