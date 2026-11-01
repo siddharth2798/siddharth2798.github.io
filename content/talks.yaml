@@ -9,6 +9,8 @@ items:
     date: 2026-10-31
     meta: MumbaiFOSS 2026 · IIT Bombay
     icon: mic
+    image: assets/talks/MumbaiFOSS-2026.jpg
+    image_alt: Me introducing the audience to FOSS United's work
     links:
       - label: Slides
         url: https://github.com/siddharth2798/Talks/blob/main/MumbaiFOSS%20-%20Intro%20Talk.pdf
